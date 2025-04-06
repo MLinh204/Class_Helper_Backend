@@ -23,7 +23,7 @@ const authController = {
             }
             const existingUser = await user.getUserByUsername(username);
             if (existingUser) return res.status(400).json({ message: 'Username already exists' });
-            const newStudent = await student.createStudent(userFullName, gender, nickname, age, address, username, password, role_id, level, point, heart);
+            const newStudent = await student.createStudent(userFullName, age, address, gender, nickname, username, password, role_id, level, point, heart);
             return res.status(200).json(newStudent);
         } catch (err) {
             res.status(500).json({ message: 'Error registering user', err });
