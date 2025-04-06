@@ -9,8 +9,15 @@ const vocabController = {
             const {list_id} = req.params;
 
             //Get user Id
-            const studentId = req.user.id;
+            const userId = req.user.id;
+
+            //get student Id
+            const student = new Student();
+            const studentByUserId = await student.getStudentByUserId(userId);
+            if (!studentByUserId) return res.status(404).json({ message: 'User not found' });
+            const studentId = studentByUserId.id;
             if (!studentId) return res.status(404).json({ message: 'User not found' });
+            
             const createdAt = new Date();
             const vocab = new Vocab();
 

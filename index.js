@@ -64,7 +64,7 @@ app.get("/", (req, res) => {
         await connection.execute(`
             CREATE TABLE IF NOT EXISTS teachers (
                 id INT AUTO_INCREMENT PRIMARY KEY,
-                scheduleDate DATE,
+                scheduleDate VARCHAR(255),
                 user_id INT,
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
             )
