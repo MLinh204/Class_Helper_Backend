@@ -51,5 +51,13 @@ class Vocab{
         
         return rows;
     }
+    async sortVocab(id, column, order) {
+        const query = `
+            SELECT * FROM vocab 
+            WHERE list_id =? 
+            ORDER BY ${column} ${order}`;
+        const [rows] = await this.pool.query(query, [id]);
+        return rows;
+    }
 }
 module.exports = Vocab;

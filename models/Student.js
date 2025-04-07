@@ -35,11 +35,11 @@ class Student extends User {
         };
     }
 
-    async updateStudent(id, userFullName, age, address, nickname, gender, heart, level, point) {
+    async updateStudent(id, userFullName, age, address, nickname) {
         const student = await this.getStudentById(id);
         if (!student) throw new Error('Student not found');
-        const updateUserQuery = 'UPDATE students SET userFullName = ?, age = ?, address = ?, nickname = ?, gender = ?, heart = ?, level = ?, point = ? WHERE id = ?';
-        await this.pool.query(updateUserQuery, [userFullName, age, address, nickname, gender, heart, level, point, id]);
+        const updateUserQuery = 'UPDATE students SET userFullName = ?, age = ?, address = ?, nickname = ? WHERE id = ?';
+        await this.pool.query(updateUserQuery, [userFullName, age, address, nickname, id]);
         return await this.getStudentById(id);
     }
     async getAllStudents(){

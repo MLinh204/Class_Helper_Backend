@@ -33,9 +33,9 @@ const studentController = {
     async updateStudent(req, res) {
         try {
             const { id } = req.params;
-            const { userFullName, age, address, nickname, gender, heart, level, point } = req.body;
+            const { userFullName, age, address, nickname} = req.body;
             const student = new Student();
-            const updatedStudent = await student.updateStudent(id, userFullName, age, address, nickname, gender, heart, level, point);
+            const updatedStudent = await student.updateStudent(id, userFullName, age, address, nickname);
             if (!updatedStudent) return res.status(404).json({ message: 'Student not found' });
             res.json(updatedStudent);
         } catch (error) {
