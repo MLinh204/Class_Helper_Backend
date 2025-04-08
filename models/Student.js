@@ -7,9 +7,6 @@ class Student extends User {
         this.pool = pool;
     }
     async createStudent(userFullName, age, address, gender, nickname, username, password, role_id, level, point, heart) {
-        const checkQuery = 'SELECT * FROM registration_lists WHERE username = ?';
-        const [checkRows] = await this.pool.query(checkQuery, [username]);
-        if (checkRows.length === 0) throw new Error('Registration not allowed: Username not found in registration list');
         const student = await super.createUser(username, password, role_id);
         const query = 'INSERT INTO students (userFullName, gender, nickname, age, address, level, point, heart, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
         const [result] = await this.pool.query(query, [userFullName, gender, nickname, age, address, level, point, heart, student.id]);

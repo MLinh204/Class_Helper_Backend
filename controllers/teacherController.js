@@ -29,8 +29,7 @@ const teacherController = {
         try {
             const { id } = req.params;
             const teacher = new Teacher();
-            const deletedTeacher = await teacher.deleteTeacher(id);
-            if (!deletedTeacher.affectedRows) return res.status(404).json({ message: 'Teacher not found' });
+            await teacher.deleteTeacher(id);
             res.json({ message: 'Teacher deleted successfully' });
         } catch (error) {
             res.status(500).json({ message: 'Error deleting teacher', error });
