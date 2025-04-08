@@ -1,5 +1,6 @@
 const Student = require('../models/Student');
 const User = require('../models/User');
+const RegistrationList = require('../models/RegistrationList')
 
 const studentController = {
     async createStudent(req, res) {
@@ -11,6 +12,9 @@ const studentController = {
             const level = 1;
             const point = 0;
             const heart = 10;
+            const registration = new RegistrationList();
+            const inList = await registration.getRegistrationListByUsername(username);
+            if (!inList) return res.status(400).json({message: 'Registraion is not allowed for this user'})
             const existingUser = await user.getUserByUsername(username);
             if (existingUser) return res.status(400).json({ message: 'Registration not allowed: Username already exists' });
             const createdStudent = await student.createStudent(userFullName, age, address, gender, nickname, username, password, role_id, level, point, heart);
@@ -46,8 +50,7 @@ const studentController = {
         try {
             const { id } = req.params;
             const student = new Student();
-            const deletedStudent = await student.deleteStudent(id);
-            if (!deletedStudent.affectedRows) return res.status(404).json({ message: 'Student Id might be wrong' });
+            await student.deleteStudent(id);
             res.json({ message: 'Student deleted successfully' });
         } catch (error) {
             res.status(500).json({ message: 'Error deleting student', error });

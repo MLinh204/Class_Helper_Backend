@@ -39,7 +39,7 @@ const registrationListController = {
             const { username } = req.body;
             const registrationList = new RegistrationList();
             const existingRegistrationList = await registrationList.getRegistrationListByUsername(username);
-            if(existingRegistrationList.username === username) return res.status(400).json({ message: 'Registration not allowed: Username already exists in registration list' });
+            if(existingRegistrationList) return res.status(400).json({ message: 'Registration not allowed: Username already exists in registration list' });
             const updatedRegistrationList = await registrationList.updateRegistrationList(id, username);
             if(!updatedRegistrationList) return res.status(404).json({ message: 'Registration list not found' });
             res.json(updatedRegistrationList);
