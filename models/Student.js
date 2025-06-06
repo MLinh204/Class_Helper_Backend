@@ -6,10 +6,10 @@ class Student extends User {
         super();
         this.pool = pool;
     }
-    async createStudent(userFullName, age, address, gender, nickname, username, password, role_id, level, point, heart) {
+    async createStudent(userFullName, age, address, gender, nickname, username, password, role_id, level, point, heart, isCreatedByTeacher) {
         const student = await super.createUser(username, password, role_id);
-        const query = 'INSERT INTO students (userFullName, gender, nickname, age, address, level, point, heart, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
-        const [result] = await this.pool.query(query, [userFullName, gender, nickname, age, address, level, point, heart, student.id]);
+        const query = 'INSERT INTO students (userFullName, gender, nickname, age, address, level, point, heart, is_created_by_teacher, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        const [result] = await this.pool.query(query, [userFullName, gender, nickname, age, address, level, point, heart, isCreatedByTeacher, student.id]);
         return await this.getStudentById(result.insertId);
     }
     async getStudentById(studentId) {

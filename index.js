@@ -81,6 +81,7 @@ app.get("/", (req, res) => {
                 point INT not null,
                 heart INT not null,
                 user_id INT UNIQUE,
+                is_created_by_teacher BOOLEAN DEFAULT false,
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
             )
             `);

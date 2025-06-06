@@ -11,5 +11,6 @@ router.put('/vocab/:id', verifyToken, vocabController.updateVocab);
 router.delete('/vocab/:id', verifyToken, verifyRole(roleRequired), vocabController.deleteVocab);
 router.get('/vocab/list/:list_id/search', verifyToken, vocabController.searchVocab);
 router.get('/vocab/list/:list_id/sort', verifyToken, vocabController.sortVocabsBy);
+router.post('/vocab/external/list/:list_id', verifyToken, vocabController.createWithAPI);
 
 module.exports = router;

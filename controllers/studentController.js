@@ -5,7 +5,7 @@ const RegistrationList = require('../models/RegistrationList')
 const studentController = {
     async createStudent(req, res) {
         try {
-            const { userFullName, age, address, username, password, gender, nickname } = req.body;
+            const { userFullName, age, address, username, password, gender, nickname, isCreatedByTeacher } = req.body;
             const student = new Student();
             const user = new User();
             const role_id = 2;
@@ -17,7 +17,7 @@ const studentController = {
             if (!inList) return res.status(400).json({message: 'Registraion is not allowed for this user'})
             const existingUser = await user.getUserByUsername(username);
             if (existingUser) return res.status(400).json({ message: 'Registration not allowed: Username already exists' });
-            const createdStudent = await student.createStudent(userFullName, age, address, gender, nickname, username, password, role_id, level, point, heart);
+            const createdStudent = await student.createStudent(userFullName, age, address, gender, nickname, username, password, role_id, level, point, heart, isCreatedByTeacher);
             res.json(createdStudent);
         } catch (error) {
             res.status(500).json({ message: 'Error creating student', error });

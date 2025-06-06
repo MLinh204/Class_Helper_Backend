@@ -2,6 +2,8 @@ const Vocab = require('../models/vocab');
 const Student = require('../models/Student');
 const VocabList = require('../models/vocabList');
 const  {calculateAndUpdatePoints} = require('../services/studentService');
+const DICTIONARY_API_URL = 'https://api.dictionaryapi.dev/api/v2/entries/en';
+const axios = require('axios');
 const vocabController = {
     async createVocab(req, res) {
         try {
@@ -39,6 +41,43 @@ const vocabController = {
         } catch (err) {
             res.status(500).json({ message: 'Error creating vocabulary', error: err.message });
 
+        }
+    },
+    async createWithAPI(req, res) {
+        try{
+            const { word, translation } = req.body;
+            const { list_id } = req.params;
+            //Get user Id
+            const userId = req.user.id;
+
+            //get student Id
+            const student = new Student();
+            const studentByUserId = await student.getStudentByUserId(userId);
+            if (!studentByUserId) return res.status(404).json({ message: 'User not found' });
+            const isCreatedByTeacher = studentByUserId.is_created_by_teacher;
+            if (!isCreatedByTeacher) return res.status(403).json({ message: 'Only special students can create vocabulary with this button'});
+            const studentId = studentByUserId.id;
+            const createdAt = new Date();
+            const vocab = new Vocab();
+            const wordInDictionary = await axios.get(`${DICTIONARY_API_URL}/${word}`);
+            if (!wordInDictionary.data || wordInDictionary.data.length === 0) {
+                return res.status(404).json({ message: 'Word not found in dictionary' });
+            }
+            const definition = wordInDictionary.data[0].meanings[0].definitions[0].definition;
+            const part_of_speech = wordInDictionary.data[0].meanings[0].partOfSpeech;
+            const example_sentence = wordInDictionary.data[0].meanings[0].definitions[0].example || 'Not available';
+            const synonyms = wordInDictionary.data[0].meanings[0].synonyms ? wordInDictionary.data[0].meanings[0].synonyms.join(', ') : 'Not available';
+            const antonyms = wordInDictionary.data[0].meanings[0].antonyms ? wordInDictionary.data[0].meanings[0].antonyms.join(', ') : 'Not available';
+            const newVocab = await vocab.createVocab(list_id, word, translation, definition, part_of_speech, example_sentence, synonyms, antonyms, studentId, createdAt);
+            //Increase word count in the vocab list
+            const vocabList = new VocabList();
+            const existingVocabList = await vocabList.getVocabListById(list_id);
+            if (!existingVocabList) return res.status(404).json({ message: 'Vocab list not found' });
+            const word_count = existingVocabList.word_count + 1;
+            await vocabList.updateWordCount(list_id, word_count);
+            res.status(200).json(newVocab);
+        } catch (err) {
+            res.status(500).json({ message: 'Error creating vocabulary with API', error: err.message });
         }
     },
     async getVocabById(req, res) {
