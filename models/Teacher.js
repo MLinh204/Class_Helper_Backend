@@ -37,7 +37,6 @@ class Teacher extends User{
     }
     async deleteTeacher(id){
         const teacher = await this.getTeacherById(id);
-        if(!teacher) throw new Error('Teacher not found');
         const query = 'DELETE FROM teachers WHERE id =?';
         await this.pool.query(query, [id]);
         await super.deleteUser(teacher.user_id);
