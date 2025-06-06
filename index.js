@@ -58,7 +58,7 @@ app.get("/", (req, res) => {
                 password VARCHAR(255) NOT NULL,
                 role_id INT,
                 FOREIGN KEY (role_id) REFERENCES roles(id),
-                CONSTRAINT fk_registration_lists FOREIGN KEY (username) REFERENCES registration_lists(username)
+                CONSTRAINT fk_registration_lists FOREIGN KEY (username) REFERENCES registration_lists(username) ON DELETE CASCADE
             )
             `);
         await connection.execute(`
