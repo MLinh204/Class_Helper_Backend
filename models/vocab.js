@@ -51,7 +51,7 @@ class Vocab{
         
         return rows;
     }
-    async sortVocab(id, column, order) {
+    async sortVocabsBy(id, column, order) {
         const query = `
             SELECT * FROM vocab 
             WHERE list_id =? 
