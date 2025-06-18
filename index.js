@@ -15,6 +15,8 @@ const attendanceRecordRoutes = require("./routes/attendanceRecordRoutes");
 const attendanceListRoutes = require("./routes/attendanceListRoutes");
 const vocabRoutes = require("./routes/vocabRoutes");
 const vocabListRoutes = require("./routes/vocabListRoutes");
+const salaryListRoutes = require("./routes/salaryListRoutes");
+const salaryRecordRoutes = require("./routes/salaryRecordRoutes");
 
 const app = express();
 
@@ -31,6 +33,8 @@ app.use("/api", attendanceRecordRoutes);
 app.use("/api", attendanceListRoutes);
 app.use("/api", vocabRoutes);
 app.use("/api", vocabListRoutes);
+app.use("/api", salaryListRoutes);
+app.use("/api", salaryRecordRoutes);
 
 app.get("/", (req, res) => {
   res.send("Server is running!");
@@ -136,11 +140,12 @@ app.get("/", (req, res) => {
             `);
     await connection.execute(
       sql`
-        CREATE TABLE salary_lists (
+        CREATE TABLE IF NOT EXISTS salary_lists (
           id INT AUTO_INCREMENT PRIMARY KEY,
           title VARCHAR(255) NOT NULL,
-          month_year VARCHAR(7) NOT NULL, -- Format: MM/YYYY
-          status ENUM('draft', 'finalized', 'completed') DEFAULT 'draft',
+          month_year VARCHAR(255) NOT NULL,
+          daily_rate BIGINT NOT NULL, -- VND amount in smallest unit
+          status ENUM('active', 'completed') DEFAULT 'active',
           total_records INT DEFAULT 0,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -152,7 +157,7 @@ app.get("/", (req, res) => {
     );
     await connection.execute(
       sql`        
-        CREATE TABLE salary_records (
+        CREATE TABLE IF NOT EXISTS salary_records (
           id INT AUTO_INCREMENT PRIMARY KEY,
           list_id INT NOT NULL,
           student_id INT NOT NULL,
