@@ -21,7 +21,7 @@ const salaryListController = {
           .status(400)
           .json({ message: "month and year and daily rate are required" });
       }
-      const title = `Salary List for ${monthYear}`;
+      const title = `Payment List for ${monthYear}`;
       const status = "active";
       const createdAt = new Date();
       const lastUpdatedAt = new Date();
