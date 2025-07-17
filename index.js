@@ -17,6 +17,7 @@ const vocabRoutes = require("./routes/vocabRoutes");
 const vocabListRoutes = require("./routes/vocabListRoutes");
 const salaryListRoutes = require("./routes/salaryListRoutes");
 const salaryRecordRoutes = require("./routes/salaryRecordRoutes");
+const APIKeyRoutes = require("./routes/APIKeyRoutes");
 
 const app = express();
 
@@ -35,6 +36,7 @@ app.use("/api", vocabRoutes);
 app.use("/api", vocabListRoutes);
 app.use("/api", salaryListRoutes);
 app.use("/api", salaryRecordRoutes);
+app.use("/api", APIKeyRoutes);
 
 app.get("/", (req, res) => {
   res.send("Server is running!");
@@ -186,6 +188,17 @@ app.get("/", (req, res) => {
         );
       `
     );
+    await connection.execute(`
+            CREATE TABLE IF NOT EXISTS api_keys (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                username VARCHAR(50) NOT NULL,
+                token VARCHAR(255) NOT NULL UNIQUE,
+                type VARCHAR(255) NOT NULL,
+                is_expired BOOLEAN DEFAULT false,
+                expires_at DATETIME NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+    `);
     await connection.release();
     console.log("Database tables created");
   } catch (err) {
